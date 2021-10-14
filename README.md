@@ -42,10 +42,10 @@
 - [x] HTTP
 - [ ] TCP-based 自研协议
 
-## Session 
+## Session
 
 session 在使用 API 的登录接口时由服务端生成返回。  
-每次 API 请求动作必须含有 session 字段(uuid) 以识别用户。   
+每次 API 请求动作必须含有 session 字段(uuid) 以识别用户。
 
 ## Token 更新算法流程
 
@@ -102,7 +102,7 @@ Worker 作为自动任务执行器，具有状态、无状态，有创建或关�
 ### 流程
 
 1. 导入插件到指定位置
-2. 插件绑定到 Worker 
+2. 插件绑定到 Worker
 3. Worker 运行
 4. 调用插件
 5. 插件推送消息
