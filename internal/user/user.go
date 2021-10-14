@@ -1,15 +1,101 @@
-package nfly
+package user
+
+import (
+	userErrors "common_notify_server/internal/errors"
+	iface "common_notify_server/internal/interface"
+	"golang.org/x/crypto/bcrypt"
+)
+
+var Helper iface.Helper
 
 type USER struct {
-	Name string
-	Group GROUP
-	Permission []PERMISSION
+	Credit Credit
+	Group  Group
 	// Limit
 	// Access Control
 }
 
-// Register the user into the database and return USER instance
-func Register(name string, pass string) *USER{
-	return &USER{}
+func (u *USER) ComparePassword(pass string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(u.Credit.Password), []byte(pass)) == nil
 }
 
+// Register the user to the database and return USER instance
+// default group is Admin
+func Register(email string, pass string, group *Group) (*USER, error) {
+	// if exist
+	if userExist(email) {
+		return nil, userErrors.UserExist
+	}
+	// hash the password
+	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+	// return error if hash failed
+	if err != nil {
+		return nil, err
+	}
+	// using default if nil group
+	if group == nil {
+		group = AdminGP
+	}
+	// create an instance of USER
+	n := &USER{
+		Credit: Credit{
+			Email:    email,
+			Password: string(hash),
+		},
+		Group: *group,
+	}
+	// store to cache and DB
+	if addNewUser(n) {
+		return n, nil
+	}
+	// return error if store process failed
+	return nil, userErrors.UserSaveFailed
+}
+
+// Login the user and return USER instance
+func Login(email string, pass string) (*USER, error) {
+	// find the user
+	u := findUserByEmail(email)
+	// return error if not found by id or email
+	if u == nil {
+		return nil, userErrors.UserNotFound
+	}
+	// password authentication
+	if u.ComparePassword(pass) {
+		return u, nil
+	}
+	// return error if authentication failed
+	return nil, userErrors.UserAuthenticationFailed
+}
+
+// Refresh the cached User slice from DB
+func Refresh() bool {
+	Helper.Refresh()
+	return true
+}
+
+// addNewUser to cached User slice and DB
+func addNewUser(user *USER) bool {
+	CachedUsers = append(CachedUsers, user)
+	//todo: save users to DB
+	Helper.AddUser(user)
+	return true
+}
+
+func userExist(email string) bool {
+	for _, user := range CachedUsers {
+		if user.Credit.Email == email {
+			return true
+		}
+	}
+	return false
+}
+
+func findUserByEmail(email string) *USER {
+	for _, user := range CachedUsers {
+		if user.Credit.Email == email {
+			return user
+		}
+	}
+	return nil
+}

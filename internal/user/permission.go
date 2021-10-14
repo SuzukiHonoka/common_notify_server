@@ -1,16 +1,16 @@
-package nfly
+package user
 
-type PERMISSION int
+type Permission int
 
 const (
 	// User represents the User Management
-	User PERMISSION = iota
+	User Permission = iota
 	// API represents the API Management
-	API PERMISSION = iota
+	API Permission = iota
 	// Worker represents the Worker Management
-	Worker PERMISSION = iota
+	Worker Permission = iota
 	// SafeGuard represents the SafeGuard Management
-	SafeGuard PERMISSION = iota
+	SafeGuard Permission = iota
 	// Generator represents the Generator Management
-	Generator PERMISSION = iota
+	Generator Permission = iota
 )
