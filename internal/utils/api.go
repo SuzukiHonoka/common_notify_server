@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var RealIPHeader = []string{"X-REAL-IP", "X-FORWARDED-FOR", "native"}
+var RealIPHeader = []string{"X-REAL-IP", "X-FORWARDED-FOR", ""}
 
 func ParseAccount(r *http.Request) (string, string, error) {
 	if err := r.ParseForm(); err != nil {
@@ -48,4 +48,11 @@ func ParseIP(r *http.Request) net.IP {
 		}
 	}
 	return nil
+}
+
+func ParseSession(r *http.Request) string {
+	if err := r.ParseForm(); err != nil {
+		return ""
+	}
+	return r.FormValue("Session")
 }

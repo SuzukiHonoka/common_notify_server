@@ -10,20 +10,18 @@ import (
 const actionRegister = "register"
 
 func UserRegister(w http.ResponseWriter, r *http.Request) {
-	if r.ParseForm() != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	if email, pass, err := utils.ParseAccount(r); err == nil {
+		if utils.IsNotEmpty(email, pass) {
+			var u *user.USER
+			u, err = user.Register(email, pass, nil)
+			if err == nil {
+				utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, true, u)))
+				return
+			}
+			utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, false, err.Error())))
+			return
+		}
 	}
-	email := r.FormValue("email")
-	pass := r.FormValue("password")
-	if utils.IsEmpty(email, pass) {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	u, err := user.Register(email, pass, nil)
-	if err != nil {
-		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, false, err.Error())))
-		return
-	}
-	utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, u != nil, u)))
+	w.WriteHeader(http.StatusBadRequest)
+	utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, false, "check parameters")))
 }

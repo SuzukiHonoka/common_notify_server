@@ -19,7 +19,7 @@ type Session struct {
 
 func NewSession(ip net.IP, user *user.USER) *Session {
 	var count int
-	for _, session := range CachedSession {
+	for _, session := range CachedSessions {
 		if ip.Equal(session.RemoteAddr) {
 			count++
 		}
@@ -34,13 +34,22 @@ func NewSession(ip net.IP, user *user.USER) *Session {
 		UUID:       uid,
 		ExpDate:    time.Now().AddDate(0, 0, 7),
 	}
-	CachedSession = append(CachedSession, t)
-	log.Println("total:", len(CachedSession), "=>", "new session:", uid, "for", user.Credit.Email)
+	CachedSessions = append(CachedSessions, t)
+	log.Println("total:", len(CachedSessions), "=>", "new session:", uid, "for", user.Credit.Email)
 	return t
 }
 
+func FindUserBySession(uid string) *user.USER {
+	for _, session := range CachedSessions {
+		if session.UUID.String() == uid {
+			return session.Bound
+		}
+	}
+	return nil
+}
+
 func CheckSession(user *user.USER, uid string) bool {
-	for _, v := range CachedSession {
+	for _, v := range CachedSessions {
 		if v.Bound == user {
 			return v.UUID.String() == uid
 		}
