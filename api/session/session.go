@@ -52,10 +52,9 @@ func FindUserBySessionID(r *http.Request, uid string) *user.User {
 		if err != nil {
 			return nil
 		}
-		if session.UUID == id {
-			if session.RemoteAddr.Equal(utils.ParseIP(r)) {
-				return session.Bound
-			}
+		// double check
+		if session.UUID == id && session.RemoteAddr.Equal(utils.ParseIP(r)) {
+			return session.Bound
 		}
 	}
 	return nil
