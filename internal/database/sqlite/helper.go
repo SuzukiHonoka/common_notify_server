@@ -3,6 +3,7 @@ package sqlite
 import (
 	config "common_notify_server/config/database"
 	database "common_notify_server/internal/database/common"
+	"common_notify_server/internal/notification"
 	"common_notify_server/internal/user"
 	"common_notify_server/internal/utils"
 	"common_notify_server/res"
@@ -39,14 +40,14 @@ func (h *Helper) GetUsers() interface{} {
 	row, err := h.DB.Query(res.SelectAllUserFromDB)
 	utils.CheckErrors(err)
 	defer database.RowClose(row)
-	var users []*user.USER
+	var users []*user.User
 	for row.Next() {
 		var email string
 		var password string
 		var group user.Type
 		err = row.Scan(&email, &password, &group)
 		utils.CheckErrors(err)
-		users = append(users, &user.USER{
+		users = append(users, &user.User{
 			Credit: user.Credit{
 				Email:    email,
 				Password: password,
@@ -59,7 +60,7 @@ func (h *Helper) GetUsers() interface{} {
 }
 
 func (h *Helper) AddUser(usr interface{}) {
-	p := usr.(*user.USER)
+	p := usr.(*user.User)
 	s, err := h.DB.Prepare(res.InsertUser)
 	utils.CheckErrors(err)
 	_, err = s.Exec(p.Credit.Email, p.Credit.Password, p.Group.ID)
@@ -68,5 +69,12 @@ func (h *Helper) AddUser(usr interface{}) {
 }
 
 func (h *Helper) Refresh() {
-	user.CachedUsers = h.GetUsers().([]*user.USER)
+	user.CachedUsers = h.GetUsers().([]*user.User)
+	title := "test"
+	notification.CachedNotifications[user.CachedUsers[0]] = notification.Notifications{
+		notification.NewNotification(user.CachedUsers[0], &title, notification.MessageChain{
+			notification.NewTextMessage(title),
+			notification.NewBinaryMessage([]byte{1, 2, 1, 2, 3, 4, 5, 6}),
+		}),
+	}
 }

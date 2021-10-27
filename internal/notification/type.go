@@ -1,8 +1,9 @@
 package notification
 
-type Type uint8
+type Type string
 
 const (
-	TypeSenderAPI    Type = iota
-	TypeSenderWorker Type = iota
+	TypeText   Type = "text"
+	TypeImage  Type = "image"
+	TypeBinary Type = "binary"
 )

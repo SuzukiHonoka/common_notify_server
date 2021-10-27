@@ -8,21 +8,21 @@ import (
 
 var Helper iface.Helper
 
-type USER struct {
+type User struct {
 	Credit Credit
 	Group  Group
 	// Limit
 	// Access Control
 }
 
-func (u *USER) ComparePassword(pass string) bool {
+func (u *User) ComparePassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(u.Credit.Password), []byte(pass)) == nil
 }
 
-// Register the user to the database and return USER instance
+// Register the user to the database and return User instance
 // default group is Admin
-func Register(email string, pass string, group *Group) (*USER, error) {
-	// if exist
+func Register(email string, pass string, group *Group) (*User, error) {
+	// if user exist
 	if userExist(email) {
 		return nil, userErrors.UserExist
 	}
@@ -36,8 +36,8 @@ func Register(email string, pass string, group *Group) (*USER, error) {
 	if group == nil {
 		group = AdminGP
 	}
-	// create an instance of USER
-	n := &USER{
+	// create an instance of User
+	n := &User{
 		Credit: Credit{
 			Email:    email,
 			Password: string(hash),
@@ -52,8 +52,8 @@ func Register(email string, pass string, group *Group) (*USER, error) {
 	return nil, userErrors.UserSaveFailed
 }
 
-// Login the user and return USER instance
-func Login(email string, pass string) (*USER, error) {
+// Login the user and return User instance
+func Login(email string, pass string) (*User, error) {
 	// find the user
 	u := findUserByEmail(email)
 	// return error if not found by id or email
@@ -75,23 +75,18 @@ func Refresh() bool {
 }
 
 // addNewUser to cached User slice and DB
-func addNewUser(user *USER) bool {
+func addNewUser(user *User) bool {
 	CachedUsers = append(CachedUsers, user)
-	//todo: save users to DB
+	// save users to DB
 	Helper.AddUser(user)
 	return true
 }
 
 func userExist(email string) bool {
-	for _, user := range CachedUsers {
-		if user.Credit.Email == email {
-			return true
-		}
-	}
-	return false
+	return findUserByEmail(email) != nil
 }
 
-func findUserByEmail(email string) *USER {
+func findUserByEmail(email string) *User {
 	for _, user := range CachedUsers {
 		if user.Credit.Email == email {
 			return user

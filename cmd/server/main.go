@@ -23,13 +23,12 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", userAPI.UserLogin).Methods(http.MethodPost)
 	router.HandleFunc("/register", userAPI.UserRegister).Methods(http.MethodPost)
-	// Check notifications: requires token
-	router.HandleFunc("/check/{uuid}", feedAPI.GetFeeds).Methods(http.MethodGet)
+	router.HandleFunc("/feeds", feedAPI.GetFeeds).Methods(http.MethodGet)
 	log.Println("NFLY API will listen tcp incomes at", confServer.Binds)
 	log.Fatal(http.ListenAndServe(confServer.Binds, router))
 }
 
 func prompt() {
-	fmt.Printf("NFLY, a cross-plaform notify framework for devs and pros, it can simply secure your notification" +
-		" also within datas.\nWritten in golang by starx.\nBackend starting..\n")
+	fmt.Printf("NFLY, a cross-plaform notify framework for devs and pros, which can simply secure your notification" +
+		" also within datas.\nWritten in golang by starx.\n")
 }

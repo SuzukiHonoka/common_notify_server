@@ -11,7 +11,7 @@ import (
 func sqlite() {
 	log.Println("connect method: sqlite")
 	user.Helper = new(helper.Helper)
-	if !utils.Available(conf.DBPath) {
+	if !utils.PathExist(conf.DBPath) {
 		// panic("db file does not exist")
 		log.Println("creating new DB")
 		// create sqlite file and init table

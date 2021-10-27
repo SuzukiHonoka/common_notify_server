@@ -2,5 +2,5 @@ package user
 
 type Credit struct {
 	Email    string
-	Password string // hashed password string
+	Password string `json:"-"` // hide hashed password string from marshall
 }

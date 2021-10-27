@@ -3,14 +3,14 @@ package user
 type Permission int
 
 const (
-	// User represents the User Management
-	User Permission = iota
-	// API represents the API Management
-	API Permission = iota
-	// Worker represents the Worker Management
-	Worker Permission = iota
-	// SafeGuard represents the SafeGuard Management
-	SafeGuard Permission = iota
-	// Generator represents the Generator Management
-	Generator Permission = iota
+	// PermissionUser represents the User Management
+	PermissionUser Permission = iota
+	// PermissionAPI represents the API Management
+	PermissionAPI Permission = iota
+	// PermissionWorker represents the Worker Management
+	PermissionWorker Permission = iota
+	// PermissionSafeGuard represents the SafeGuard Management
+	PermissionSafeGuard Permission = iota
+	// PermissionGenerator represents the Generator Management
+	PermissionGenerator Permission = iota
 )

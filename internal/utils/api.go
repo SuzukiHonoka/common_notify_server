@@ -30,16 +30,15 @@ func ParseIP(r *http.Request) net.IP {
 		var ips string
 		switch i {
 		case 0:
-			ips = r.Header.Get(header)
-			if len(ips) == 0 {
-				continue
-			}
+			fallthrough
 		case 1:
 			ips = r.Header.Get(header)
 			if len(ips) == 0 {
 				continue
 			}
-			ips = strings.Split(ips, ",")[0]
+			if i == 1 {
+				ips = strings.Split(ips, ",")[0]
+			}
 		case 2:
 			ips = r.RemoteAddr
 		}
@@ -51,8 +50,5 @@ func ParseIP(r *http.Request) net.IP {
 }
 
 func ParseSession(r *http.Request) string {
-	if err := r.ParseForm(); err != nil {
-		return ""
-	}
-	return r.FormValue("Session")
+	return r.Header.Get("Session")
 }
