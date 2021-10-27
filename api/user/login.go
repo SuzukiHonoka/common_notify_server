@@ -13,7 +13,7 @@ const actionLogin = "login"
 
 func UserLogin(w http.ResponseWriter, r *http.Request) {
 	// parse account
-	if email, pass, err := utils.ParseAccount(r); err == nil {
+	if email, pass, err := utils.ParseAccount(w, r); err == nil {
 		// user login
 		var u *user.User
 		u, err = user.Login(email, pass)
@@ -35,7 +35,4 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, false, err.Error())))
 		return
 	}
-	// if parse failed
-	w.WriteHeader(http.StatusBadRequest)
-	utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, false, "check parameters")))
 }

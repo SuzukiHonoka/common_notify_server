@@ -36,7 +36,7 @@ func NewSession(ip net.IP, user *user.User) *Session {
 	}
 	// add to cache
 	CachedSessions = append(CachedSessions, t)
-	log.Println("total:", len(CachedSessions), "=>", "new session:", uid, "for", user.Credit.Email)
+	log.Printf("total: %d => new session: %s for %s\n", len(CachedSessions), uid, user.Credit.Email)
 	return t
 }
 
@@ -59,6 +59,7 @@ func (x *SessionsList) FindSessionByID(ip net.IP, uid string) *Session {
 		}
 		// double check
 		if session.UUID == id && session.RemoteAddr.Equal(ip) {
+			log.Printf("user: %s => using session: %s\n", session.Bound.Credit.Email, session.UUID.String())
 			return session
 		}
 	}

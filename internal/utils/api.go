@@ -12,18 +12,17 @@ import (
 var RealIPHeader = []string{"X-REAL-IP", "X-FORWARDED-FOR", ""}
 
 // ParseAccount parse from post form data
-func ParseAccount(r *http.Request) (string, string, error) {
-	// parse form
-	if err := r.ParseForm(); err != nil {
-		return "", "", err
+func ParseAccount(w http.ResponseWriter, r *http.Request) (string, string, error) {
+	if err := r.ParseForm(); err == nil {
+		// get form data
+		email := r.FormValue("email")
+		pass := r.FormValue("password")
+		// check if empty
+		if IsNotEmpty(email, pass) {
+			return email, pass, nil
+		}
 	}
-	// get form data
-	email := r.FormValue("email")
-	pass := r.FormValue("password")
-	// check if empty
-	if IsNotEmpty(email, pass) {
-		return email, pass, nil
-	}
+	w.WriteHeader(http.StatusBadRequest)
 	return "", "", errors.ParseAccountFailed
 }
 
@@ -64,6 +63,15 @@ func ParseIP(r *http.Request) net.IP {
 }
 
 // ParseSession from http header
-func ParseSession(r *http.Request) *session.Session {
-	return session.CachedSessions.FindSessionByID(ParseIP(r), r.Header.Get("Session"))
+func ParseSession(w http.ResponseWriter, r *http.Request) *session.Session {
+	if s := session.CachedSessions.FindSessionByID(ParseIP(r), r.Header.Get("Session")); s != nil {
+		return s
+	}
+	// session not validated
+	w.WriteHeader(http.StatusUnauthorized)
+	return nil
+}
+
+func ParseNotificationList() {
+
 }
