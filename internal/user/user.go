@@ -15,6 +15,8 @@ type User struct {
 	// Access Control
 }
 
+type UsersList []*User
+
 func (u *User) ComparePassword(pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(u.Credit.Password), []byte(pass)) == nil
 }
@@ -45,7 +47,7 @@ func Register(email string, pass string, group *Group) (*User, error) {
 		Group: *group,
 	}
 	// store to cache and DB
-	if addNewUser(n) {
+	if CachedUsers.addNewUser(n) {
 		return n, nil
 	}
 	// return error if store process failed
@@ -55,7 +57,7 @@ func Register(email string, pass string, group *Group) (*User, error) {
 // Login the user and return User instance
 func Login(email string, pass string) (*User, error) {
 	// find the user
-	u := findUserByEmail(email)
+	u := CachedUsers.findUserByEmail(email)
 	// return error if not found by id or email
 	if u == nil {
 		return nil, userErrors.UserNotFound
@@ -75,19 +77,19 @@ func Refresh() bool {
 }
 
 // addNewUser to cached User slice and DB
-func addNewUser(user *User) bool {
-	CachedUsers = append(CachedUsers, user)
+func (x *UsersList) addNewUser(user *User) bool {
+	*x = append(*x, user)
 	// save users to DB
 	Helper.AddUser(user)
 	return true
 }
 
 func userExist(email string) bool {
-	return findUserByEmail(email) != nil
+	return CachedUsers.findUserByEmail(email) != nil
 }
 
-func findUserByEmail(email string) *User {
-	for _, user := range CachedUsers {
+func (x *UsersList) findUserByEmail(email string) *User {
+	for _, user := range *x {
 		if user.Credit.Email == email {
 			return user
 		}

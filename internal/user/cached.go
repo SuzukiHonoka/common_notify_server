@@ -1,3 +1,3 @@
 package user
 
-var CachedUsers []*User
+var CachedUsers UsersList

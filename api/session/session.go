@@ -2,11 +2,9 @@ package session
 
 import (
 	"common_notify_server/internal/user"
-	"common_notify_server/internal/utils"
 	"github.com/google/uuid"
 	"log"
 	"net"
-	"net/http"
 	"time"
 )
 
@@ -19,14 +17,11 @@ type Session struct {
 	ExpDate    time.Time
 }
 
+type SessionsList []*Session
+
 func NewSession(ip net.IP, user *user.User) *Session {
 	// check the ip allocated session
-	var count int
-	for _, session := range CachedSessions {
-		if ip.Equal(session.RemoteAddr) {
-			count++
-		}
-	}
+	count := len(CachedSessions.FindSessionByIP(ip))
 	// reject to alloc if count greater than max limitation
 	if count >= maxSession {
 		return nil
@@ -45,16 +40,26 @@ func NewSession(ip net.IP, user *user.User) *Session {
 	return t
 }
 
-func FindUserBySessionID(r *http.Request, uid string) *user.User {
-	for _, session := range CachedSessions {
+func (x *SessionsList) FindSessionByIP(ip net.IP) SessionsList {
+	var tmp SessionsList
+	for _, session := range *x {
+		if session.RemoteAddr.Equal(ip) {
+			tmp = append(tmp, session)
+		}
+	}
+	return tmp
+}
+
+func (x *SessionsList) FindSessionByID(ip net.IP, uid string) *Session {
+	for _, session := range *x {
 		id, err := uuid.Parse(uid)
 		// if parse uid failed
 		if err != nil {
 			return nil
 		}
 		// double check
-		if session.UUID == id && session.RemoteAddr.Equal(utils.ParseIP(r)) {
-			return session.Bound
+		if session.UUID == id && session.RemoteAddr.Equal(ip) {
+			return session
 		}
 	}
 	return nil

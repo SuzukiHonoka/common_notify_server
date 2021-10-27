@@ -1,3 +1,3 @@
 package session
 
-var CachedSessions []*Session
+var CachedSessions SessionsList
