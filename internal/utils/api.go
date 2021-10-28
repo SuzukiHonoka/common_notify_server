@@ -88,12 +88,11 @@ func ParseNotificationList(r *http.Request) *notification.Message {
 	var tmp notification.Message
 	defer CloseBodyNoCheck(r.Body)
 	bodyType := r.Header.Get("Content-Type")
-	if len(bodyType) == 0 || bodyType != "application/json" {
-		return nil
-	}
-	err := json.NewDecoder(r.Body).Decode(&tmp)
-	if err == nil {
-		return &tmp
+	if len(bodyType) > 0 && bodyType == "application/json" {
+		err := json.NewDecoder(r.Body).Decode(&tmp)
+		if err == nil {
+			return &tmp
+		}
 	}
 	return nil
 }
