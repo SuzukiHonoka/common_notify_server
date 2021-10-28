@@ -2,6 +2,7 @@ package main
 
 import (
 	feedAPI "common_notify_server/api/feed"
+	pushAPI "common_notify_server/api/push"
 	userAPI "common_notify_server/api/user"
 	confServer "common_notify_server/config/server"
 	initialize "common_notify_server/init/database"
@@ -23,6 +24,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", userAPI.UserLogin).Methods(http.MethodPost)
 	router.HandleFunc("/register", userAPI.UserRegister).Methods(http.MethodPost)
+	router.HandleFunc("/push", pushAPI.Push).Methods(http.MethodPost)
 	router.HandleFunc("/feeds", feedAPI.GetFeeds).Methods(http.MethodGet)
 	log.Println("NFLY API will listen tcp incomes at", confServer.Binds)
 	log.Fatal(http.ListenAndServe(confServer.Binds, router))
