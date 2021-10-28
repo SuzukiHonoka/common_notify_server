@@ -58,10 +58,28 @@ func (x *SessionsList) FindSessionByID(ip net.IP, uid string) *Session {
 			return nil
 		}
 		// double check
-		if session.UUID == id && session.RemoteAddr.Equal(ip) {
+		if session.UUID == id && session.RemoteAddr.Equal(ip) && !x.CleanIfExpired(session) {
 			log.Printf("user: %s => using session: %s\n", session.Bound.Credit.Email, session.UUID.String())
 			return session
 		}
 	}
 	return nil
+}
+
+// CleanIfExpired if expired, clean it and return true
+func (x *SessionsList) CleanIfExpired(session *Session) bool {
+	// check if expired
+	if session.ExpDate.Sub(time.Now()).Milliseconds() < 0 {
+		// find and clean
+		var index int
+		for i, s := range *x {
+			if s == session {
+				index = i
+				break
+			}
+		}
+		*x = append((*x)[:index], (*x)[index+1:]...)
+		return true
+	}
+	return false
 }
