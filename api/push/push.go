@@ -18,8 +18,8 @@ func Push(w http.ResponseWriter, r *http.Request) {
 				notification.NewNotification(s.Bound, ns.Title, ns.MessageChain))
 			w.WriteHeader(http.StatusOK)
 			utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionPush, true, ns)))
+			return
 		}
 		http.Error(w, errors.NotificationsListParseFailed.Error(), http.StatusBadRequest)
-		return
 	}
 }
