@@ -4,8 +4,8 @@ type Type int
 
 type Group struct {
 	ID         uint8
-	Name       string
 	Type       Type
+	Name       string
 	Permission *[]Permission // only require if Type is Custom
 }
 
