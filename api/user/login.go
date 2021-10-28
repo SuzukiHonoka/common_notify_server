@@ -33,6 +33,5 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 		// if login failed
 		w.WriteHeader(http.StatusUnauthorized)
 		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, false, err.Error())))
-		return
 	}
 }

@@ -22,6 +22,5 @@ func UserRegister(w http.ResponseWriter, r *http.Request) {
 		}
 		// if register failed
 		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, false, err.Error())))
-		return
 	}
 }
