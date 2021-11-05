@@ -3,11 +3,11 @@ package utils
 // IsEmpty check any string is empty
 func IsEmpty(s ...string) bool {
 	for _, ss := range s {
-		if len(ss) == 0 {
-			return true
+		if len(ss) != 0 {
+			return false
 		}
 	}
-	return false
+	return true
 }
 
 // IsNotEmpty check if all string not empty
