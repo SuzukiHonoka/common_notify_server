@@ -35,7 +35,7 @@ func NewNotification(u *user.User, title *string, chain MessageChain) *Notificat
 	}
 }
 
-func (x UserMap) FindNotificationsByUser(u *user.User) []*Notification {
+func (x UserMap) FindNotificationsByUser(u *user.User) Notifications {
 	// filter status
 	var notPushedNotifications Notifications
 	for _, el := range x[u] {
