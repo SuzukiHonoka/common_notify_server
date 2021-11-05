@@ -1,6 +1,7 @@
 package main
 
 import (
+	collectAPI "common_notify_server/api/collect"
 	feedAPI "common_notify_server/api/feed"
 	pushAPI "common_notify_server/api/push"
 	userAPI "common_notify_server/api/user"
@@ -26,6 +27,7 @@ func main() {
 	router.HandleFunc("/register", userAPI.UserRegister).Methods(http.MethodPost)
 	router.HandleFunc("/push", pushAPI.Push).Methods(http.MethodPost)
 	router.HandleFunc("/feeds", feedAPI.GetFeeds).Methods(http.MethodGet)
+	router.HandleFunc("/collect/{uuid}", collectAPI.Collect).Methods(http.MethodPut)
 	log.Println("NFLY API will listen tcp incomes at", confServer.Binds)
 	log.Fatal(http.ListenAndServe(confServer.Binds, router))
 }
