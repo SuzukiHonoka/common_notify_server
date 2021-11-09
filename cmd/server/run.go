@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	collectAPI "common_notify_server/api/collect"
@@ -7,14 +7,12 @@ import (
 	userAPI "common_notify_server/api/user"
 	confServer "common_notify_server/config/server"
 	initialize "common_notify_server/init/database"
-	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
 
-func main() {
-	prompt()
+func Run() {
 	// opt: read extra file as config
 	// todo-1: initialize, connect database and read data (user, config)
 	initialize.DataBase()
@@ -30,9 +28,4 @@ func main() {
 	router.HandleFunc("/collect/{uuid}", collectAPI.Collect).Methods(http.MethodPut)
 	log.Println("NFLY API will listen tcp incomes at", confServer.Binds)
 	log.Fatal(http.ListenAndServe(confServer.Binds, router))
-}
-
-func prompt() {
-	fmt.Printf("NFLY, a cross-plaform notify framework for devs and pros, which can simply secure your notification" +
-		" also within datas.\nWritten in golang by starx.\n")
 }
