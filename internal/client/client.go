@@ -8,6 +8,6 @@ import (
 type Client struct {
 	ID         uuid.UUID
 	DeviceInfo Device
-	Bond       []user.User
+	Bond       []*user.User
 	Version    string
 }

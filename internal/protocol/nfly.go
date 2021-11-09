@@ -1,8 +1,10 @@
 package nfly
 
+import "common_notify_server/internal/notification"
+
 type NFLY struct {
 	Action   ID
-	Type     TYPE
-	Msg      MSG
+	Type     notification.Priority
+	Msg      notification.Message
 	Receiver RECEIVER
 }

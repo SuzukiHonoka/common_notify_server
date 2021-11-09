@@ -13,5 +13,5 @@ type Filter struct {
 	ID     uint8
 	Name   string
 	Action Action
-	IP     []net.IP
+	IPs    []net.IP
 }
