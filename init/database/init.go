@@ -2,7 +2,7 @@ package init
 
 import (
 	confCommon "common_notify_server/config/common"
-	value "common_notify_server/res"
+	database "common_notify_server/internal/database/common"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 )
@@ -17,10 +17,10 @@ func init() {
 
 func DataBase() {
 	switch confCommon.DBMethod {
-	case value.MethodSqlite:
+	case database.MethodSqlite:
 		sqlite()
 		break
-	case value.MethodMysql:
+	case database.MethodMysql:
 		panic("not implemented")
 	}
 }

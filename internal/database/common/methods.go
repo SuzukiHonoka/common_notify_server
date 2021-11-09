@@ -1,4 +1,4 @@
-package res
+package database
 
 const (
 	MethodMysql  = 0
