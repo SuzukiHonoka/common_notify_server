@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"common_notify_server/api/session"
 	"common_notify_server/internal/errors"
 	"common_notify_server/internal/notification"
+	"common_notify_server/internal/session"
 	"encoding/json"
 	"io"
 	"net"
