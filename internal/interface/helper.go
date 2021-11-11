@@ -7,4 +7,5 @@ type Helper interface {
 	Refresh()
 	GetUsers() interface{}
 	AddUser(usr interface{})
+	DelUser(usr interface{})
 }

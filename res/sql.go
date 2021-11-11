@@ -5,4 +5,5 @@ const (
 		"gid integer)"
 	SelectAllUserFromDB = "SELECT email,password,gid FROM user"
 	InsertUser          = "INSERT INTO user(email,password,gid) values(?,?,?)"
+	DeleteUser          = "DELETE FROM user WHERE email=?"
 )

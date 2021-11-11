@@ -63,9 +63,20 @@ func (h *Helper) AddUser(usr interface{}) {
 	p := usr.(*user.User)
 	s, err := h.DB.Prepare(res.InsertUser)
 	utils.CheckErrors(err)
+	defer s.Close()
 	_, err = s.Exec(p.Credit.Email, p.Credit.Password, p.Group.ID)
 	utils.CheckErrors(err)
-	log.Println("added the user to db:", p.Credit.Email)
+	log.Println("user added:", p.Credit.Email)
+}
+
+func (h *Helper) DelUser(usr interface{}) {
+	p := usr.(*user.User)
+	s, err := h.DB.Prepare(res.DeleteUser)
+	utils.CheckErrors(err)
+	defer s.Close()
+	_, err = s.Exec(p.Credit.Email)
+	utils.CheckErrors(err)
+	log.Println("user deleted:", p.Credit.Email)
 }
 
 func (h *Helper) Refresh() {

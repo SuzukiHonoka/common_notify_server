@@ -66,6 +66,15 @@ func (x *SessionsList) FindSessionByID(ip net.IP, uid string) *Session {
 	return nil
 }
 
+func (x *SessionsList) FindSessionByUser(user *user.User) *Session {
+	for _, session := range *x {
+		if session.Bound == user {
+			return session
+		}
+	}
+	return nil
+}
+
 // CleanIfExpired if expired, clean it and return true
 func (x *SessionsList) CleanIfExpired(session *Session) bool {
 	// check if expired

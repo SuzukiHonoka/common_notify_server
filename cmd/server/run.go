@@ -23,6 +23,7 @@ func Run() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", userAPI.UserLogin).Methods(http.MethodPost)
 	router.HandleFunc("/register", userAPI.UserRegister).Methods(http.MethodPost)
+	router.HandleFunc("/delete/{user}", userAPI.UserDelete).Methods(http.MethodDelete)
 	router.HandleFunc("/push", pushAPI.Push).Methods(http.MethodPost)
 	router.HandleFunc("/feeds", feedAPI.GetFeeds).Methods(http.MethodGet)
 	router.HandleFunc("/collect/{uuid}", collectAPI.Collect).Methods(http.MethodPut)

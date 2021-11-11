@@ -25,7 +25,7 @@ func (u *User) ComparePassword(pass string) bool {
 // default group is Admin
 func Register(email string, pass string, group *Group) (*User, error) {
 	// if user exist
-	if userExist(email) {
+	if CachedUsers.UserExist(email) {
 		return nil, userErrors.UserExist
 	}
 	// hash the password
@@ -47,7 +47,7 @@ func Register(email string, pass string, group *Group) (*User, error) {
 		Group: *group,
 	}
 	// store to cache and DB
-	if CachedUsers.addNewUser(n) {
+	if CachedUsers.AddNewUser(n) {
 		return n, nil
 	}
 	// return error if store process failed
@@ -57,7 +57,7 @@ func Register(email string, pass string, group *Group) (*User, error) {
 // Login the user and return User instance
 func Login(email string, pass string) (*User, error) {
 	// find the user
-	u := CachedUsers.findUserByEmail(email)
+	u := CachedUsers.FindUserByEmail(email)
 	// return error if not found by id or email
 	if u == nil {
 		return nil, userErrors.UserNotFound
@@ -76,19 +76,34 @@ func Refresh() bool {
 	return true
 }
 
-// addNewUser to cached User slice and DB
-func (x *UsersList) addNewUser(user *User) bool {
+// AddNewUser to cached User slice and DB
+func (x *UsersList) AddNewUser(user *User) bool {
 	*x = append(*x, user)
 	// save users to DB
 	Helper.AddUser(user)
 	return true
 }
 
-func userExist(email string) bool {
-	return CachedUsers.findUserByEmail(email) != nil
+// DeleteUser cached User from slice and DB
+func (x *UsersList) DeleteUser(user *User) bool {
+	// find and clean
+	var index int
+	for i, s := range *x {
+		if s == user {
+			index = i
+			break
+		}
+	}
+	*x = append((*x)[:index], (*x)[index+1:]...)
+	Helper.DelUser(user)
+	return true
 }
 
-func (x *UsersList) findUserByEmail(email string) *User {
+func (x *UsersList) UserExist(email string) bool {
+	return x.FindUserByEmail(email) != nil
+}
+
+func (x *UsersList) FindUserByEmail(email string) *User {
 	for _, user := range *x {
 		if user.Credit.Email == email {
 			return user
