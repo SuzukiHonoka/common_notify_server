@@ -22,7 +22,11 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 			// alloc session
 			if s := session.NewSession(utils.ParseIP(r), u); s != nil {
 				// set header session value
-				w.Header().Set("Session", s.UUID.String())
+				http.SetCookie(w, &http.Cookie{
+					Name:    "session",
+					Value:   s.UUID.String(),
+					Expires: s.ExpDate,
+				})
 				utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, true, u)))
 				return
 			}

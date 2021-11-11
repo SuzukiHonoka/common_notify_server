@@ -32,10 +32,12 @@ func ParseAccount(w http.ResponseWriter, r *http.Request) (string, string, error
 
 // ParseSession from http header
 func ParseSession(w http.ResponseWriter, r *http.Request) *session.Session {
-	if s := session.CachedSessions.FindSessionByID(ParseIP(r), r.Header.Get("Session")); s != nil {
-		// content type
-		w.Header().Set("Content-Type", "application/json")
-		return s
+	if cs, err := r.Cookie("session"); err == nil {
+		if s := session.CachedSessions.FindSessionByID(ParseIP(r), cs.Value); s != nil {
+			// content type
+			w.Header().Set("Content-Type", "application/json")
+			return s
+		}
 	}
 	// session not validated
 	http.Error(w, errors.SessionInvalid.Error(), http.StatusUnauthorized)
