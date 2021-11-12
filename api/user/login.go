@@ -27,15 +27,14 @@ func UserLogin(w http.ResponseWriter, r *http.Request) {
 					Value:   s.UUID.String(),
 					Expires: s.ExpDate,
 				})
-				utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, true, u)))
+				utils.WriteReplyNoCheck(w, http.StatusOK, utils.VtoJson(*api.NewReply(actionLogin, true, u)))
 				return
 			}
 			// if alloc failed
-			utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, false, errors.SessionPoolMaxReached.Error())))
+			utils.WriteReplyNoCheck(w, http.StatusLocked, utils.VtoJson(*api.NewReply(actionLogin, false, errors.SessionPoolMaxReached.Error())))
 			return
 		}
 		// if login failed
-		w.WriteHeader(http.StatusUnauthorized)
-		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionLogin, false, err.Error())))
+		utils.WriteReplyNoCheck(w, http.StatusUnauthorized, utils.VtoJson(*api.NewReply(actionLogin, false, err.Error())))
 	}
 }

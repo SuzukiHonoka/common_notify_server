@@ -16,10 +16,9 @@ func Push(w http.ResponseWriter, r *http.Request) {
 			// add ns to cache
 			notification.CachedNotifications[s.Bound.Credit.Email] = append(notification.CachedNotifications[s.Bound.Credit.Email],
 				notification.NewNotification(s.Bound, ns.Title, ns.MessageChain))
-			w.WriteHeader(http.StatusOK)
-			utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionPush, true, ns)))
+			utils.WriteReplyNoCheck(w, http.StatusOK, utils.VtoJson(*api.NewReply(actionPush, true, ns)))
 			return
 		}
-		http.Error(w, errors.NotificationsListParseFailed.Error(), http.StatusBadRequest)
+		utils.WriteStringReplyNoCheck(w, http.StatusBadRequest, errors.NotificationsListParseFailed.Error())
 	}
 }

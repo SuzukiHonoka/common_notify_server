@@ -27,8 +27,7 @@ func ParseAccount(w http.ResponseWriter, r *http.Request) (string, string, error
 			return email, pass, nil
 		}
 	}
-	w.WriteHeader(http.StatusBadRequest)
-	_, _ = fmt.Fprint(w, errors.ParseAccountFailed.Error())
+	WriteStringReplyNoCheck(w, http.StatusBadRequest, errors.ParseAccountFailed.Error())
 	return "", "", errors.ParseAccountFailed
 }
 
@@ -42,8 +41,7 @@ func ParseSession(w http.ResponseWriter, r *http.Request) *session.Session {
 		}
 	}
 	// session not validated
-	w.WriteHeader(http.StatusUnauthorized)
-	_, _ = fmt.Fprint(w, errors.SessionInvalid.Error())
+	WriteStringReplyNoCheck(w, http.StatusUnauthorized, errors.SessionInvalid.Error())
 	return nil
 }
 
@@ -54,8 +52,14 @@ func VtoJson(v interface{}) []byte {
 }
 
 // WriteReplyNoCheck write []byte to resp without any check
-func WriteReplyNoCheck(w http.ResponseWriter, msg []byte) {
+func WriteReplyNoCheck(w http.ResponseWriter, code int, msg []byte) {
+	w.WriteHeader(code)
 	_, _ = w.Write(msg)
+}
+
+func WriteStringReplyNoCheck(w http.ResponseWriter, code int, msg string) {
+	w.WriteHeader(code)
+	_, _ = fmt.Fprint(w, msg)
 }
 
 // ParseIP from http header

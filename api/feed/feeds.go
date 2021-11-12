@@ -14,6 +14,6 @@ func GetFeeds(w http.ResponseWriter, r *http.Request) {
 	if s := utils.ParseSession(w, r); s != nil {
 		// get bounded notification
 		nfs := notification.CachedNotifications.FindNotificationsByUser(s.Bound)
-		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionFeeds, true, nfs)))
+		utils.WriteReplyNoCheck(w, http.StatusOK, utils.VtoJson(*api.NewReply(actionFeeds, true, nfs)))
 	}
 }

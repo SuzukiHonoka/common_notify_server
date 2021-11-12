@@ -17,10 +17,10 @@ func UserRegister(w http.ResponseWriter, r *http.Request) {
 		u, err = user.Register(email, pass, nil)
 		// if register success
 		if err == nil {
-			utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, true, u)))
+			utils.WriteReplyNoCheck(w, http.StatusOK, utils.VtoJson(*api.NewReply(actionRegister, true, u)))
 			return
 		}
 		// if register failed
-		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionRegister, false, err.Error())))
+		utils.WriteReplyNoCheck(w, http.StatusInternalServerError, utils.VtoJson(*api.NewReply(actionRegister, false, err.Error())))
 	}
 }

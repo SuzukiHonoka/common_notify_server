@@ -30,19 +30,17 @@ func Collect(w http.ResponseWriter, r *http.Request) {
 						if n.Header.UUID == uid {
 							// set flag
 							n.Status.Pushed = status
-							utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionCollect, true, nil)))
+							utils.WriteReplyNoCheck(w, http.StatusOK, utils.VtoJson(*api.NewReply(actionCollect, true, nil)))
 							return
 						}
 					}
 					// not found
-					w.WriteHeader(http.StatusNotFound)
-					utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionCollect, false, errors.NotificationNotFound.Error())))
+					utils.WriteReplyNoCheck(w, http.StatusNotFound, utils.VtoJson(*api.NewReply(actionCollect, false, errors.NotificationNotFound.Error())))
 					return
 				}
 			}
 		}
 		// if collect failed
-		w.WriteHeader(http.StatusBadRequest)
-		utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionCollect, false, errors.BadRequest.Error())))
+		utils.WriteReplyNoCheck(w, http.StatusBadRequest, utils.VtoJson(*api.NewReply(actionCollect, false, errors.BadRequest.Error())))
 	}
 }

@@ -39,7 +39,7 @@ func NewSession(ip net.IP, user *user.User) *Session {
 	// add to cache
 	//CachedSessions = append(CachedSessions, t)
 	CachedSessionsMap[t.UUID.String()] = t
-	log.Printf("new session: %s => %s\n", uid, user.Credit.Email)
+	log.Printf("new session alloc: %s => user: %s\n", uid, user.Credit.Email)
 	return t
 }
 
