@@ -14,7 +14,7 @@ func Push(w http.ResponseWriter, r *http.Request) {
 	if s := utils.ParseSession(w, r); s != nil {
 		if ns := utils.ParseNotificationList(r); ns != nil {
 			// add ns to cache
-			notification.CachedNotifications[s.Bound] = append(notification.CachedNotifications[s.Bound],
+			notification.CachedNotifications[s.Bound.Credit.Email] = append(notification.CachedNotifications[s.Bound.Credit.Email],
 				notification.NewNotification(s.Bound, ns.Title, ns.MessageChain))
 			w.WriteHeader(http.StatusOK)
 			utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionPush, true, ns)))

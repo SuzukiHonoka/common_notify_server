@@ -7,7 +7,7 @@ import (
 	"common_notify_server/internal/utils"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -20,13 +20,13 @@ func Collect(w http.ResponseWriter, r *http.Request) {
 		var uid uuid.UUID
 		status := false
 		// read flag from body
-		if b, err := ioutil.ReadAll(r.Body); err == nil {
+		if b, err := io.ReadAll(r.Body); err == nil {
 			// convert flag to bool
 			if status, err = strconv.ParseBool(string(b)); err == nil {
 				// get notification uuid
 				if uid, err = uuid.Parse(mux.Vars(r)["uuid"]); err == nil {
 					// find by uuid
-					for _, n := range notification.CachedNotifications[s.Bound] {
+					for _, n := range notification.CachedNotifications[s.Bound.Credit.Email] {
 						if n.Header.UUID == uid {
 							// set flag
 							n.Status.Pushed = status
@@ -34,6 +34,10 @@ func Collect(w http.ResponseWriter, r *http.Request) {
 							return
 						}
 					}
+					// not found
+					w.WriteHeader(http.StatusNotFound)
+					utils.WriteReplyNoCheck(w, utils.VtoJson(*api.NewReply(actionCollect, false, errors.NotificationNotFound.Error())))
+					return
 				}
 			}
 		}

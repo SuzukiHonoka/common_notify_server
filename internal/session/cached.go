@@ -1,3 +1,3 @@
 package session
 
-var CachedSessions SessionsList
+var CachedSessionsMap = SessionsMap{}

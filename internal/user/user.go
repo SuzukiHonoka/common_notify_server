@@ -15,6 +15,7 @@ type User struct {
 	// Access Control
 }
 
+type UsersMap map[string]*User
 type UsersList []*User
 
 func (u *User) ComparePassword(pass string) bool {
@@ -25,7 +26,7 @@ func (u *User) ComparePassword(pass string) bool {
 // default group is Admin
 func Register(email string, pass string, group *Group) (*User, error) {
 	// if user exist
-	if CachedUsers.UserExist(email) {
+	if CachedUsersMap.UserExist(email) {
 		return nil, userErrors.UserExist
 	}
 	// hash the password
@@ -47,7 +48,7 @@ func Register(email string, pass string, group *Group) (*User, error) {
 		Group: *group,
 	}
 	// store to cache and DB
-	if CachedUsers.AddNewUser(n) {
+	if CachedUsersMap.AddNewUser(n) {
 		return n, nil
 	}
 	// return error if store process failed
@@ -57,7 +58,7 @@ func Register(email string, pass string, group *Group) (*User, error) {
 // Login the user and return User instance
 func Login(email string, pass string) (*User, error) {
 	// find the user
-	u := CachedUsers.FindUserByEmail(email)
+	u := CachedUsersMap.FindUserByEmail(email)
 	// return error if not found by id or email
 	if u == nil {
 		return nil, userErrors.UserNotFound
@@ -77,37 +78,28 @@ func Refresh() bool {
 }
 
 // AddNewUser to cached User slice and DB
-func (x *UsersList) AddNewUser(user *User) bool {
-	*x = append(*x, user)
+func (x *UsersMap) AddNewUser(user *User) bool {
+	(*x)[user.Credit.Email] = user
 	// save users to DB
 	Helper.AddUser(user)
 	return true
 }
 
 // DeleteUser cached User from slice and DB
-func (x *UsersList) DeleteUser(user *User) bool {
+func (x *UsersMap) DeleteUser(user *User) bool {
 	// find and clean
-	var index int
-	for i, s := range *x {
-		if s == user {
-			index = i
-			break
-		}
-	}
-	*x = append((*x)[:index], (*x)[index+1:]...)
+	delete(*x, user.Credit.Email)
 	Helper.DelUser(user)
 	return true
 }
 
-func (x *UsersList) UserExist(email string) bool {
+func (x *UsersMap) UserExist(email string) bool {
 	return x.FindUserByEmail(email) != nil
 }
 
-func (x *UsersList) FindUserByEmail(email string) *User {
-	for _, user := range *x {
-		if user.Credit.Email == email {
-			return user
-		}
+func (x *UsersMap) FindUserByEmail(email string) *User {
+	if v, ok := (*x)[email]; ok {
+		return v
 	}
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"common_notify_server/internal/notification"
 	"common_notify_server/internal/session"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -26,21 +27,23 @@ func ParseAccount(w http.ResponseWriter, r *http.Request) (string, string, error
 			return email, pass, nil
 		}
 	}
-	http.Error(w, errors.ParseAccountFailed.Error(), http.StatusBadRequest)
+	w.WriteHeader(http.StatusBadRequest)
+	_, _ = fmt.Fprint(w, errors.ParseAccountFailed.Error())
 	return "", "", errors.ParseAccountFailed
 }
 
 // ParseSession from http header
 func ParseSession(w http.ResponseWriter, r *http.Request) *session.Session {
 	if cs, err := r.Cookie("session"); err == nil {
-		if s := session.CachedSessions.FindSessionByID(ParseIP(r), cs.Value); s != nil {
+		if s := session.CachedSessionsMap.FindSessionByID(ParseIP(r), cs.Value); s != nil {
 			// content type
 			w.Header().Set("Content-Type", "application/json")
 			return s
 		}
 	}
 	// session not validated
-	http.Error(w, errors.SessionInvalid.Error(), http.StatusUnauthorized)
+	w.WriteHeader(http.StatusUnauthorized)
+	_, _ = fmt.Fprint(w, errors.SessionInvalid.Error())
 	return nil
 }
 

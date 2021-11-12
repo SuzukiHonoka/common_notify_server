@@ -13,7 +13,7 @@ type Notification struct {
 
 type Notifications []*Notification
 
-type UserMap map[*user.User]Notifications
+type UserMap map[string]Notifications
 
 func NewNotification(u *user.User, title *string, chain MessageChain) *Notification {
 	uid, _ := uuid.NewRandom()
@@ -35,14 +35,18 @@ func NewNotification(u *user.User, title *string, chain MessageChain) *Notificat
 	}
 }
 
-func (x UserMap) FindNotificationsByUser(u *user.User) Notifications {
+func (x *UserMap) FindNotificationsByUser(u *user.User) Notifications {
 	// filter status
 	var notPushedNotifications Notifications
-	for _, el := range x[u] {
+	for _, el := range (*x)[u.Credit.Email] {
 		// check flag
 		if !el.Status.Pushed {
 			notPushedNotifications = append(notPushedNotifications, el)
 		}
 	}
 	return notPushedNotifications
+}
+
+func (x *UserMap) DeleteNotificationsByUser(u *user.User) {
+	delete(*x, u.Credit.Email)
 }

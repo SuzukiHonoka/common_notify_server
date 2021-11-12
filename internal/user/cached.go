@@ -1,3 +1,3 @@
 package user
 
-var CachedUsers UsersList
+var CachedUsersMap = UsersMap{}

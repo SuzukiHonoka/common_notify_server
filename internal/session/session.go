@@ -19,9 +19,11 @@ type Session struct {
 
 type SessionsList []*Session
 
+type SessionsMap map[string]*Session // uuid as key
+
 func NewSession(ip net.IP, user *user.User) *Session {
 	// check the ip allocated session
-	count := len(CachedSessions.FindSessionByIP(ip))
+	count := len(CachedSessionsMap.FindSessionByUser(user))
 	// reject to alloc if count greater than max limitation
 	if count >= maxSession {
 		return nil
@@ -35,30 +37,30 @@ func NewSession(ip net.IP, user *user.User) *Session {
 		ExpDate:    time.Now().AddDate(0, 0, 7), // exp in next 7 days
 	}
 	// add to cache
-	CachedSessions = append(CachedSessions, t)
-	log.Printf("total: %d => new session: %s for %s\n", len(CachedSessions), uid, user.Credit.Email)
+	//CachedSessions = append(CachedSessions, t)
+	CachedSessionsMap[t.UUID.String()] = t
+	log.Printf("new session: %s => %s\n", uid, user.Credit.Email)
 	return t
 }
 
-func (x *SessionsList) FindSessionByIP(ip net.IP) SessionsList {
-	var tmp SessionsList
-	for _, session := range *x {
-		if session.RemoteAddr.Equal(ip) {
-			tmp = append(tmp, session)
+func (x *SessionsMap) FindSessionByUser(user *user.User) SessionsList {
+	var m SessionsList
+	for _, v := range *x {
+		if v.Bound == user {
+			m = append(m, v)
 		}
 	}
-	return tmp
+	return m
 }
 
-func (x *SessionsList) FindSessionByID(ip net.IP, uid string) *Session {
-	for _, session := range *x {
-		id, err := uuid.Parse(uid)
-		// if parse uid failed
-		if err != nil {
-			return nil
-		}
+func (x *SessionsMap) FindSessionByID(ip net.IP, uid string) *Session {
+	var session *Session
+	if v, ok := (*x)[uid]; ok {
+		session = v
+	}
+	if session != nil {
 		// double check
-		if session.UUID == id && session.RemoteAddr.Equal(ip) && !x.CleanIfExpired(session) {
+		if session.RemoteAddr.Equal(ip) && !x.CleanIfExpired(session) {
 			log.Printf("user: %s => using session: %s\n", session.Bound.Credit.Email, session.UUID.String())
 			return session
 		}
@@ -66,28 +68,12 @@ func (x *SessionsList) FindSessionByID(ip net.IP, uid string) *Session {
 	return nil
 }
 
-func (x *SessionsList) FindSessionByUser(user *user.User) *Session {
-	for _, session := range *x {
-		if session.Bound == user {
-			return session
-		}
-	}
-	return nil
-}
-
 // CleanIfExpired if expired, clean it and return true
-func (x *SessionsList) CleanIfExpired(session *Session) bool {
+func (x *SessionsMap) CleanIfExpired(session *Session) bool {
 	// check if expired
 	if session.ExpDate.Sub(time.Now()).Milliseconds() < 0 {
 		// find and clean
-		var index int
-		for i, s := range *x {
-			if s == session {
-				index = i
-				break
-			}
-		}
-		*x = append((*x)[:index], (*x)[index+1:]...)
+		delete(*x, session.UUID.String())
 		return true
 	}
 	return false

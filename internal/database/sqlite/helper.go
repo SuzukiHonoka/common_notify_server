@@ -63,7 +63,7 @@ func (h *Helper) AddUser(usr interface{}) {
 	p := usr.(*user.User)
 	s, err := h.DB.Prepare(res.InsertUser)
 	utils.CheckErrors(err)
-	defer s.Close()
+	defer database.StmtClose(s)
 	_, err = s.Exec(p.Credit.Email, p.Credit.Password, p.Group.ID)
 	utils.CheckErrors(err)
 	log.Println("user added:", p.Credit.Email)
@@ -73,19 +73,26 @@ func (h *Helper) DelUser(usr interface{}) {
 	p := usr.(*user.User)
 	s, err := h.DB.Prepare(res.DeleteUser)
 	utils.CheckErrors(err)
-	defer s.Close()
+	defer database.StmtClose(s)
 	_, err = s.Exec(p.Credit.Email)
 	utils.CheckErrors(err)
 	log.Println("user deleted:", p.Credit.Email)
 }
 
 func (h *Helper) Refresh() {
-	user.CachedUsers = h.GetUsers().([]*user.User)
+	stored := h.GetUsers().([]*user.User)
+	// method 2: users keymap with email as primary key
+	for _, u := range stored {
+		user.CachedUsersMap[u.Credit.Email] = u
+	}
+	// add test notifications
 	title := "test"
-	notification.CachedNotifications[user.CachedUsers[0]] = notification.Notifications{
-		notification.NewNotification(user.CachedUsers[0], &title, notification.MessageChain{
-			notification.NewTextMessage(title),
-			notification.NewBinaryMessage([]byte{1, 2, 1, 2, 3, 4, 5, 6}),
-		}),
+	for k, v := range user.CachedUsersMap {
+		notification.CachedNotifications[k] = notification.Notifications{
+			notification.NewNotification(v, &title, notification.MessageChain{
+				notification.NewTextMessage(title),
+				notification.NewBinaryMessage([]byte{1, 2, 1, 2, 3, 4, 5, 6}),
+			}),
+		}
 	}
 }
