@@ -18,11 +18,20 @@ func Collect(w http.ResponseWriter, r *http.Request) {
 	// collect notification push status
 	if s := utils.ParseSession(w, r); s != nil {
 		var uid uuid.UUID
-		status := false
 		// read flag from body
 		if b, err := io.ReadAll(r.Body); err == nil {
-			// convert flag to bool
-			if status, err = strconv.ParseBool(string(b)); err == nil {
+			parsed := true
+			var status bool
+			// 2-way
+			if b[0] == 0x00 || b[0] == 0x01 {
+				status = b[0] == 0x01
+			} else {
+				// convert flag to bool
+				if status, err = strconv.ParseBool(string(b)); err != nil {
+					parsed = false
+				}
+			}
+			if parsed {
 				// get notification uuid
 				if uid, err = uuid.Parse(mux.Vars(r)["uuid"]); err == nil {
 					// find by uuid
