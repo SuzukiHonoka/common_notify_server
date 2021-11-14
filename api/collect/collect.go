@@ -23,7 +23,7 @@ func Collect(w http.ResponseWriter, r *http.Request) {
 			parsed := true
 			var status bool
 			// 2-way
-			if b[0] == 0x00 || b[0] == 0x01 {
+			if b[0] <= 0x01 {
 				status = b[0] == 0x01
 			} else {
 				// convert flag to bool
