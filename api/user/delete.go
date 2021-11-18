@@ -8,7 +8,6 @@ import (
 	"common_notify_server/internal/utils"
 	"github.com/gorilla/mux"
 	"net/http"
-	"time"
 )
 
 const actionDelete = "delete"
@@ -27,10 +26,7 @@ func UserDelete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// also delete related session and notifications
-		now := time.Now()
-		for _, v := range session.CachedSessionsMap.FindSessionByUser(u) {
-			v.ExpDate = now // invalidate the session
-		}
+		session.CachedSessionsMap.DeleteSessionByUser(s.Bound)
 		notification.CachedNotifications.DeleteNotificationsByUser(u)
 		if user.CachedUsersMap.DeleteUser(u) {
 			utils.WriteReplyNoCheck(w, http.StatusOK, utils.VtoJson(*api.NewReply(actionDelete, true, u)))

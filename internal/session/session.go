@@ -53,6 +53,15 @@ func (x *SessionsMap) FindSessionByUser(user *user.User) SessionsList {
 	return m
 }
 
+func (x *SessionsMap) DeleteSessionByUser(user *user.User) {
+	//now := time.Now()
+	for _, v := range CachedSessionsMap.FindSessionByUser(user) {
+		// invalidate the session
+		delete(*x, v.UUID.String())
+		//v.ExpDate = now
+	}
+}
+
 func (x *SessionsMap) FindSessionByID(ip net.IP, uid string) *Session {
 	var session *Session
 	if v, ok := (*x)[uid]; ok {
