@@ -1,5 +1,5 @@
 package nfly
 
 const (
-	Binds = "localhost:7700"
+	Binds = "127.0.0.1:7700"
 )
