@@ -1,11 +1,11 @@
 package init
 
 import (
-	conf "common_notify_server/config/database"
-	helper "common_notify_server/internal/database/sqlite"
-	"common_notify_server/internal/user"
-	"common_notify_server/internal/utils"
 	"log"
+	conf "nfly/config/database"
+	helper "nfly/internal/database/sqlite"
+	"nfly/internal/user"
+	"nfly/internal/utils"
 )
 
 func sqlite() {

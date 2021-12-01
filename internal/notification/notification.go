@@ -1,8 +1,8 @@
 package notification
 
 import (
-	"common_notify_server/internal/user"
 	"github.com/google/uuid"
+	"nfly/internal/user"
 )
 
 type Notification struct {

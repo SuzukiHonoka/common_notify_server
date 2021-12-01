@@ -1,8 +1,8 @@
 package client
 
 import (
-	"common_notify_server/internal/user"
 	"github.com/google/uuid"
+	"nfly/internal/user"
 )
 
 type Client struct {

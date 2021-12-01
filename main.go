@@ -1,8 +1,8 @@
 package main
 
 import (
-	"common_notify_server/cmd/server"
 	"fmt"
+	"nfly/cmd/server"
 )
 
 func main() {

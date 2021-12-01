@@ -1,10 +1,10 @@
 package session
 
 import (
-	"common_notify_server/internal/user"
 	"github.com/google/uuid"
 	"log"
 	"net"
+	"nfly/internal/user"
 	"time"
 )
 

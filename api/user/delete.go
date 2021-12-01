@@ -1,13 +1,13 @@
 package api
 
 import (
-	api "common_notify_server/common"
-	"common_notify_server/internal/notification"
-	"common_notify_server/internal/session"
-	"common_notify_server/internal/user"
-	"common_notify_server/internal/utils"
 	"github.com/gorilla/mux"
 	"net/http"
+	api "nfly/common"
+	"nfly/internal/notification"
+	"nfly/internal/session"
+	"nfly/internal/user"
+	"nfly/internal/utils"
 )
 
 const actionDelete = "delete"

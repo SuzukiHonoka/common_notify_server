@@ -1,4 +1,4 @@
-module common_notify_server
+module nfly
 
 go 1.17
 

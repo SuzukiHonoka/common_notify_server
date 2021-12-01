@@ -1,6 +1,6 @@
 package nfly
 
-import "common_notify_server/internal/notification"
+import "nfly/internal/notification"
 
 type NFLY struct {
 	Action   ID

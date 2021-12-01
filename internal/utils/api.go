@@ -1,14 +1,14 @@
 package utils
 
 import (
-	"common_notify_server/internal/errors"
-	"common_notify_server/internal/notification"
-	"common_notify_server/internal/session"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"nfly/internal/errors"
+	"nfly/internal/notification"
+	"nfly/internal/session"
 	"strings"
 )
 

@@ -1,10 +1,10 @@
 package init
 
 import (
-	confCommon "common_notify_server/config/common"
-	database "common_notify_server/internal/database/common"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	confCommon "nfly/config/common"
+	database "nfly/internal/database/common"
 )
 
 func init() {

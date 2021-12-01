@@ -1,10 +1,10 @@
 package api
 
 import (
-	api "common_notify_server/common"
-	"common_notify_server/internal/user"
-	"common_notify_server/internal/utils"
 	"net/http"
+	api "nfly/common"
+	"nfly/internal/user"
+	"nfly/internal/utils"
 )
 
 const actionRegister = "register"

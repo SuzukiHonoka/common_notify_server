@@ -1,11 +1,11 @@
 package api
 
 import (
-	api "common_notify_server/common"
-	"common_notify_server/internal/session"
-	"common_notify_server/internal/utils"
 	"log"
 	"net/http"
+	api "nfly/common"
+	"nfly/internal/session"
+	"nfly/internal/utils"
 )
 
 const actionLogout = "logout"

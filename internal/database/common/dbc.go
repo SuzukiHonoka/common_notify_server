@@ -1,8 +1,8 @@
 package database
 
 import (
-	"common_notify_server/internal/utils"
 	"database/sql"
+	"nfly/internal/utils"
 )
 
 func RowClose(row *sql.Rows) {

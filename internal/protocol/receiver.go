@@ -1,8 +1,8 @@
 package nfly
 
 import (
-	client "common_notify_server/internal/client"
 	"net"
+	client "nfly/internal/client"
 )
 
 type RECEIVER struct {

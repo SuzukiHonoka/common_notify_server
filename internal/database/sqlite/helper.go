@@ -1,14 +1,14 @@
 package sqlite
 
 import (
-	config "common_notify_server/config/database"
-	database "common_notify_server/internal/database/common"
-	"common_notify_server/internal/notification"
-	"common_notify_server/internal/user"
-	"common_notify_server/internal/utils"
-	"common_notify_server/res"
 	"database/sql"
 	"log"
+	config "nfly/config/database"
+	database "nfly/internal/database/common"
+	"nfly/internal/notification"
+	"nfly/internal/user"
+	"nfly/internal/utils"
+	"nfly/res"
 	"os"
 )
 

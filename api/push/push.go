@@ -1,11 +1,11 @@
 package api
 
 import (
-	api "common_notify_server/common"
-	"common_notify_server/internal/errors"
-	"common_notify_server/internal/notification"
-	"common_notify_server/internal/utils"
 	"net/http"
+	api "nfly/common"
+	"nfly/internal/errors"
+	"nfly/internal/notification"
+	"nfly/internal/utils"
 )
 
 const actionPush = "push"

@@ -1,9 +1,9 @@
 package user
 
 import (
-	userErrors "common_notify_server/internal/errors"
-	iface "common_notify_server/internal/interface"
 	"golang.org/x/crypto/bcrypt"
+	userErrors "nfly/internal/errors"
+	iface "nfly/internal/interface"
 )
 
 var Helper iface.Helper

@@ -1,15 +1,15 @@
 package server
 
 import (
-	collectAPI "common_notify_server/api/collect"
-	feedAPI "common_notify_server/api/feed"
-	pushAPI "common_notify_server/api/push"
-	userAPI "common_notify_server/api/user"
-	confServer "common_notify_server/config/server"
-	initialize "common_notify_server/init/database"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	collectAPI "nfly/api/collect"
+	feedAPI "nfly/api/feed"
+	pushAPI "nfly/api/push"
+	userAPI "nfly/api/user"
+	confServer "nfly/config/server"
+	initialize "nfly/init/database"
 )
 
 func Run() {
